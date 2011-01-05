@@ -22,42 +22,33 @@ Setup
 =====
 
 If you don't want to modify the code, follow these steps:
-	1. Grab the GoogleAnalytics.swf file from the bin-release directory
-	
-	2. Upload the file to a server that's URL addressable: make note of that URL
-	
-	3. Add ?accountNumber=UA-123456789-0 (UA-123456789-0 will be replaced with your Google Analytics 
-	Account Number) to the URL
-	
-		3a. By default, all of these events will be tracked under the Google Analytics Category of 
-		"Brightcove Player". If you'd like to change that, you can specify playerType as another 
-		parameter. 
-		
-			?accountNumber=UA-123456789-0&playerType=Open%20Source%20Testing
-			
-		Note that the playerType must be URL-encoded. This could be heplful if you want to distinguish 
-		one player from another in your Google Analytics account.
-		
-		3b. Alternatively, these parameters can be added to the publishing code like so (again, the 
-			playerType parameter is optional):
-			
-			<param name="accountNumber" value="UA-123456789-0" />
-			<param name="playerType" value="Open%20Source%20Testing" />
-		
-	4. Log in to your Brightcove account
-	
-	5. Edit your Brightcove Player and add the URL under the "Plugins" tab
-	
-	6. Save player changes
-	
-	
 
+1.	Grab the GoogleAnalytics.swf file from the bin-release directory
+2.	Upload the file to a server that's URL addressable: make note of that URL
+3.	Add ?accountNumber=UA-123456789-0 (UA-123456789-0 will be replaced with your Google Analytics 
+Account Number) to the URL
+
+	>3a.	By default, all of these events will be tracked under the Google Analytics Category of "Brightcove Player". If you'd like to change that, you can specify playerType as another parameter. 
+	
+	>>?accountNumber=UA-123456789-0&playerType=Open%20Source%20Testing
+		
+	>Note that the playerType must be URL-encoded. This could be heplful if you want to distinguish 
+	>one player from another in your Google Analytics account.
+	
+	>3b.	Alternatively, these parameters can be added to the publishing code like so (again, the playerType parameter is optional):
+		
+				<param name="accountNumber" value="UA-123456789-0" />
+				<param name="playerType" value="Open%20Source%20Testing" />
+
+4.	Log in to your Brightcove account
+5.	Edit your Brightcove Player and add the URL under the "Plugins" tab
+6.	Save player changes
+	
 If you want to make modifications to the SWF/codebase, follow these steps:
-	1. Import the project into either FlexBuilder or FlashBuilder
-	
-	2. Make sure to add the .swc files in the lib folder in the project's properties setting
-	
-	3. To get a SWF of an optimized size, make sure to do a release build
+
+1.	Import the project into either FlexBuilder or FlashBuilder
+2.	Make sure to add the .swc files in the lib folder in the project's properties setting	
+3.	To get a SWF of an optimized size, make sure to do a release build
 
 
 Usage
