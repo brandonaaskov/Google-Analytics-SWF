@@ -26,17 +26,21 @@ If you don't want to modify the code, follow these steps:
 	
 	2. Upload the file to a server that's URL addressable: make note of that URL
 	
-	3. Add ?accountNumber=UA-123456789-0 (UA-123456789-0 will be replaced with your Google Analytics Account Number) to the URL
+	3. Add ?accountNumber=UA-123456789-0 (UA-123456789-0 will be replaced with your Google Analytics 
+	Account Number) to the URL
 	
-		3a. By default, all of these events will be tracked under the Google Analytics Category of "Brightcove Player". 
-		If you'd like to change that, you can specify playerType as another parameter. 
+		3a. By default, all of these events will be tracked under the Google Analytics Category of 
+		"Brightcove Player". If you'd like to change that, you can specify playerType as another 
+		parameter. 
 		
 			?accountNumber=UA-123456789-0&playerType=Open%20Source%20Testing
 			
-		Note that the playerType must be URL-encoded. This could be heplful if you want to distinguish one player from 
-		another in your Google Analytics account.
+		Note that the playerType must be URL-encoded. This could be heplful if you want to distinguish 
+		one player from another in your Google Analytics account.
 		
-		3b. Alternatively, these parameters can be added to the publishing code like so (again, the playerType parameter is optional):
+		3b. Alternatively, these parameters can be added to the publishing code like so (again, the 
+			playerType parameter is optional):
+			
 			<param name="accountNumber" value="UA-123456789-0" />
 			<param name="playerType" value="Open%20Source%20Testing" />
 		
@@ -58,12 +62,11 @@ If you want to make modifications to the SWF/codebase, follow these steps:
 
 Usage
 =====
-To understand how Google Analytics treats Categories, Actions and Labels, you can read up on them here in the Event Tracking Guide: 
-http://code.google.com/apis/analytics/docs/tracking/eventTrackerGuide.html
+To understand how Google Analytics treats Categories, Actions and Labels, you can read up on them here in the [Event Tracking Guide](http://code.google.com/apis/analytics/docs/tracking/eventTrackerGuide.html):
 
 Google Analytics doesn't track data in real time, but after about an hour or two you should see some of the events appearing in your 
 account. Make sure you're viewing the current day - by default Google Analytics will show a different timeframe that doesn't include 
-the current day. In the left-hand nav, you'll see a "Content" section, and under that is "Event Tracking". Click that to see the 
+the current day. In the left-hand navigation, you'll see a "Content" section, and under that is "Event Tracking". Click that to see the 
 overview, categories, actions and labels from your player(s).
 
 When the media complete event fires, we're also sending along the amount of time that a user watched that video. If a user skips 
