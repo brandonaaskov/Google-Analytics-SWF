@@ -27,8 +27,7 @@ If you don't want to modify the code, follow these steps:
 	*	Alternatively, these parameters can be added to the publishing code as
 		below (`playerType` is optional):
 		
-		`<param name="accountNumber" value="UA-123456789-0" />
-		<param name="playerType" value="Open%20Source%20Testing" />`
+		`<param name="accountNumber" value="UA-123456789-0" /><param name="playerType" value="Open%20Source%20Testing" />`
 
 4.	Log in to your Brightcove account
 
