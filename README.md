@@ -37,8 +37,8 @@ Account Number) to the URL
 	
 	>3b.	Alternatively, these parameters can be added to the publishing code like so (again, the playerType parameter is optional):
 		
-	<param name="accountNumber" value="UA-123456789-0" />
-	<param name="playerType" value="Open%20Source%20Testing" />
+		<param name="accountNumber" value="UA-123456789-0" />
+		<param name="playerType" value="Open%20Source%20Testing" />
 
 4.	Log in to your Brightcove account
 5.	Edit your Brightcove Player and add the URL under the "Plugins" tab
