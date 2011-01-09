@@ -384,7 +384,14 @@ package {
 			
 			if(playerType)
 			{
-				Category.VIDEO = playerType;
+				if(playerType == "{playername}")
+				{
+					Category.VIDEO = _experienceModule.getPlayerName();
+				}
+				else
+				{
+					Category.VIDEO = playerType;	
+				}
 			}
 			
 			debug("playerType = " + Category.VIDEO);
