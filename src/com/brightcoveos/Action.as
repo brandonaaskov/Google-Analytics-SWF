@@ -1,9 +1,12 @@
 package com.brightcoveos
 {
+	import com.google.analytics.utils.URL;
+	
 	public class Action
 	{
 		public static const PLAYER_LOAD:String = "Player Load";
 		public static const VIDEO_LOAD:String = "Video Load";
+		public static const REFERRER_URL:String = "Referrer URL: ";
 		public static const MEDIA_BEGIN:String = "Media Begin";
 		public static const MEDIA_COMPLETE:String = "Media Complete";
 		public static const ENTER_FULLSCREEN:String = "Fullscreen Entered";

@@ -63,7 +63,7 @@ package {
 		3) Page URL: http://somedomain.com/section/category/page?accountNumber=UA-123456-0
 		*/
 		private static var ACCOUNT_NUMBER:String = "";
-		private static const VERSION:String = "1.0.2";
+		private static const VERSION:String = "1.0.3";
 		
 		private var _experienceModule:ExperienceModule;
 		private var _videoPlayerModule:VideoPlayerModule;
@@ -106,6 +106,13 @@ package {
 			
 			_tracker.trackEvent(Category.VIDEO, Action.PLAYER_LOAD, _experienceModule.getExperienceURL());
 			_tracker.trackEvent(Category.VIDEO, Action.VIDEO_LOAD, _customVideoID);
+			
+			var referrerURL:String = _experienceModule.getReferrerURL();
+			if(referrerURL)
+			{
+				var trackingAction:String = Action.REFERRER_URL + referrerURL;
+				_tracker.trackEvent(Category.VIDEO, trackingAction, _customVideoID);
+			}
 		}
 		
 		private function setupEventListeners():void
