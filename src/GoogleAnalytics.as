@@ -79,6 +79,8 @@ package {
 		private var _previousTimestamp:Number;
 		private var _timeWatched:Number; //stored in milliseconds
 		private var _videoMuted:Boolean = false;
+		private var _trackSeekForward:Boolean = false;
+		private var _trackSeekBackward:Boolean = false;
 		
 		override protected function initialize():void
 		{
@@ -116,15 +118,19 @@ package {
 			_videoPlayerModule.addEventListener(MediaEvent.PROGRESS, onMediaProgress);
 			_videoPlayerModule.addEventListener(MediaEvent.VOLUME_CHANGE, onVolumeChange);
 			_videoPlayerModule.addEventListener(MediaEvent.MUTE_CHANGE, onMuteChange);
+			_videoPlayerModule.addEventListener(MediaEvent.SEEK, onSeek);
 			
 			_cuePointsModule.addEventListener(CuePointEvent.CUE, onCuePoint);
 			
-			_advertisingModule.addEventListener(AdEvent.AD_START, onAdStart);
-			_advertisingModule.addEventListener(AdEvent.AD_PAUSE, onAdPause);
-			_advertisingModule.addEventListener(AdEvent.AD_POSTROLLS_COMPLETE, onAdPostrollsComplete);
-			_advertisingModule.addEventListener(AdEvent.AD_RESUME, onAdResume);
-			_advertisingModule.addEventListener(AdEvent.AD_COMPLETE, onAdComplete);
-			_advertisingModule.addEventListener(AdEvent.EXTERNAL_AD, onExternalAd);
+			if(_advertisingModule) //check to make sure ads are enabled first
+			{
+				_advertisingModule.addEventListener(AdEvent.AD_START, onAdStart);
+				_advertisingModule.addEventListener(AdEvent.AD_PAUSE, onAdPause);
+				_advertisingModule.addEventListener(AdEvent.AD_POSTROLLS_COMPLETE, onAdPostrollsComplete);
+				_advertisingModule.addEventListener(AdEvent.AD_RESUME, onAdResume);
+				_advertisingModule.addEventListener(AdEvent.AD_COMPLETE, onAdComplete);
+				_advertisingModule.addEventListener(AdEvent.EXTERNAL_AD, onExternalAd);
+			}
 		}
 		
 		private function onEnterFullScreen(pEvent:ExperienceEvent):void
@@ -184,6 +190,20 @@ package {
 			{
 				onMediaComplete(pEvent);
 			}
+			
+			
+			//track seek events
+			if(_trackSeekForward)
+			{
+				_tracker.trackEvent(Category.VIDEO, Action.SEEK_FORWARD, _customVideoID);
+				_trackSeekForward = false;
+			}
+			
+			if(_trackSeekBackward)
+			{
+				_tracker.trackEvent(Category.VIDEO, Action.SEEK_BACKWARD, _customVideoID);
+				_trackSeekBackward = false;
+			}
 		}
 		
 		/**
@@ -230,12 +250,22 @@ package {
 			}
 		}
 		
+		private function onSeek(pEvent:MediaEvent):void
+		{
+			if(pEvent.position > _currentPosition)
+			{
+				_trackSeekForward = true;
+			}
+			else
+			{
+				_trackSeekBackward = true;	
+			}
+		}
+		
 		private function onCuePoint(pEvent:CuePointEvent):void
 		{
 			if(pEvent.cuePoint.type == 2 && pEvent.cuePoint.name == "milestone")
-            {
-                _cuePointsModule.removeCodeCuePointsAtTime(_currentVideo.id, pEvent.cuePoint.time);
-                
+            {   
                 switch(pEvent.cuePoint.metadata)
                 {
                 	case "25%":
@@ -245,7 +275,7 @@ package {
                 		_tracker.trackEvent(Category.VIDEO, Action.MILESTONE_50, _customVideoID);
                 		break;
                 	case "75%":
-                		_tracker.trackEvent(Category.VIDEO, Action.MILESTONE_50, _customVideoID);
+                		_tracker.trackEvent(Category.VIDEO, Action.MILESTONE_75, _customVideoID);
                 		break;
                 }
             }

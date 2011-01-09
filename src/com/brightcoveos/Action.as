@@ -19,5 +19,7 @@ package com.brightcoveos
 		public static const AD_RESUME:String = "Ad Resume";
 		public static const AD_COMPLETE:String = "Ad Complete";
 		public static const EXTERNAL_AD:String = "External Ad Found";
+		public static const SEEK_FORWARD:String = "Seeked Forward";
+		public static const SEEK_BACKWARD:String = "Seeked Backward";
 	}
 }
