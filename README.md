@@ -10,7 +10,7 @@ Setup
 
 If you don't want to modify the code, follow these steps:
 
-1.	Grab the `GoogleAnalytics.swf` file from the `bin-release` directory
+1.	<strike>Grab the `GoogleAnalytics.swf` file from the `bin-release` directory</strike> (new build directory coming soon)
 
 2.	Upload the file to a server that's URL addressable; make note of that URL
 
@@ -21,6 +21,10 @@ If you don't want to modify the code, follow these steps:
 		Analytics Category of "Brightcove Player". If you'd like to change that,
 		you can specify `playerType` as another parameter,
 		e.g. `?accountNumber=UA-123456789-0&playerType=Open%20Source%20Testing`
+		
+		Also, you can specify the playerType as {playername} to have it dynamically 
+		use the name you specified for the player in the Brightcove Studio. 
+		e.g. `?accountNumber=UA-123456789-0&playerType={playername}`
 
 		*	Note that the `playerType` must be URL-encoded
 
@@ -75,16 +79,5 @@ you an easy method to look up the video up in your Brightcove account.
 Current Supported Events
 ========================
 
-Below is a list of the currently supported events that are being tracked
-inside the `.swf`. Media Complete is the only event that also sends along
-an event value with it, which is the amount of time that a user spent
-watching that video. 
-
-*	Player Load
-*	Video Load
-*	Media Begin
-*	Media Complete
-*	Fullscreen Entered
-*	Fullscreen Exited
-*	Video Muted
-*	Video Unmuted
+To view a list of supported events, and to see what can potentially be 
+tracked, you can view [Action.as in src > com > brightcoveos > Action.as](https://github.com/BrightcoveOS/Google-Analytics-SWF/blob/master/src/com/brightcoveos/Action.as).
