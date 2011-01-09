@@ -88,15 +88,3 @@ watching that video.
 *	Fullscreen Exited
 *	Video Muted
 *	Video Unmuted
-
-Support
-=======
-
-File Issues: [GitHub Issue Tracker](http://github.com/brightcoveos/Google-Analytics-SWF/issues/)
-
-Request Support: [Support Forums](http://opensource.brightcove.com/forum/)
-
-Please note that Open Source @ Brightcove projects are **not** supported by
-Brightcove and all questions, comments or issues should be reported through
-the appropriate OS@B channels. Brightcove Customer Support will **not**
-assist you with any Open Source @ Brightcove projects or integrations.
