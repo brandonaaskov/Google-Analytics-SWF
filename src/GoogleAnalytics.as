@@ -51,6 +51,7 @@ package {
 	import com.google.analytics.GATracker;
 	
 	import flash.display.LoaderInfo;
+	import flash.net.SharedObject;
 
 	public class GoogleAnalytics extends CustomModule
 	{
@@ -81,6 +82,7 @@ package {
 		private var _videoMuted:Boolean = false;
 		private var _trackSeekForward:Boolean = false;
 		private var _trackSeekBackward:Boolean = false;
+		private var _storedTimeWatched:SharedObject = SharedObject.getLocal("previousVideo");
 		
 		override protected function initialize():void
 		{
@@ -96,6 +98,7 @@ package {
 			
 			_currentVideo = _videoPlayerModule.getCurrentVideo();
 			_customVideoID = getCustomVideoID(_currentVideo);
+			_storedTimeWatched.data.abandonedVideo = _currentVideo;
 			
 			setAccountNumber();
 			setPlayerType();
@@ -104,15 +107,14 @@ package {
 			debug("GA Debug Enabled = " + _debugEnabled);
 			_tracker = new GATracker(_experienceModule.getStage(), GoogleAnalytics.ACCOUNT_NUMBER, "AS3", _debugEnabled);
 			
+			checkAbandonedVideo(); //check if a video didn't get a completion tracked
+			
 			_tracker.trackEvent(Category.VIDEO, Action.PLAYER_LOAD, _experienceModule.getExperienceURL());
 			_tracker.trackEvent(Category.VIDEO, Action.VIDEO_LOAD, _customVideoID);
 			
 			var referrerURL:String = _experienceModule.getReferrerURL();
-			if(referrerURL)
-			{
-				var trackingAction:String = Action.REFERRER_URL + referrerURL;
-				_tracker.trackEvent(Category.VIDEO, trackingAction, _customVideoID);
-			}
+			var trackingAction:String = Action.REFERRER_URL + referrerURL; //tracks even if referrer URL is not available
+			_tracker.trackEvent(Category.VIDEO, trackingAction, _customVideoID);
 		}
 		
 		private function setupEventListeners():void
@@ -154,6 +156,9 @@ package {
 		{
 			_currentVideo = _videoPlayerModule.getCurrentVideo();
 			_customVideoID = getCustomVideoID(_currentVideo);
+			_storedTimeWatched.data.abandonedVideo = _currentVideo;
+			createCuePoints(_currentVideo);
+			
 			_tracker.trackEvent(Category.VIDEO, Action.VIDEO_LOAD, _customVideoID);
 			
 			_previousTimestamp = new Date().getTime();
@@ -196,6 +201,10 @@ package {
 			if(pEvent.position/pEvent.duration > .98 && !_mediaComplete)
 			{
 				onMediaComplete(pEvent);
+				
+				//empty these since we don't want to track it when someone comes back
+				_storedTimeWatched.data.abandonedVideo = null;
+				_storedTimeWatched.data.abandonedTimeWatched = null;
 			}
 			
 			
@@ -362,6 +371,12 @@ package {
 			{
 				_timeWatched += timeElapsed;
 			}  
+			
+			//update time watched in case the user bails out before mediaComplete
+			if(!_mediaComplete) //make sure mediaComplete hasn't fired yet, otherwise it gets set to null and the repopulated: not what we want
+			{
+				_storedTimeWatched.data.abandonedTimeWatched = _timeWatched; //automatically gets flushed when flash player is closed	
+			}	
 		}
 		
 		private function setAccountNumber():void
@@ -395,6 +410,18 @@ package {
 			}
 			
 			debug("playerType = " + Category.VIDEO);
+		}
+		
+		private function checkAbandonedVideo():void
+		{
+			if(_storedTimeWatched.data.abandonedVideo && _storedTimeWatched.data.abandonedTimeWatched)
+			{
+				var customVideoID:String = getCustomVideoID(_storedTimeWatched.data.abandonedVideo);
+				var timeWatched:Number = Math.round(_storedTimeWatched.data.abandonedTimeWatched);
+				
+				debug("Tracking video that was previously unclosed: " + customVideoID + " : " + timeWatched);
+				_tracker.trackEvent(Category.VIDEO, Action.MEDIA_ABANDONED, customVideoID, timeWatched);
+			}
 		}
 		
 		private function getCustomVideoID(currentVideo:VideoDTO):String

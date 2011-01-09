@@ -9,6 +9,7 @@ package com.brightcoveos
 		public static const REFERRER_URL:String = "Referrer URL: ";
 		public static const MEDIA_BEGIN:String = "Media Begin";
 		public static const MEDIA_COMPLETE:String = "Media Complete";
+		public static const MEDIA_ABANDONED:String = "Media Abandoned";
 		public static const ENTER_FULLSCREEN:String = "Fullscreen Entered";
 		public static const EXIT_FULLSCREEN:String = "Fullscreen Exited";
 		public static const VIDEO_MUTED:String = "Video Muted";
