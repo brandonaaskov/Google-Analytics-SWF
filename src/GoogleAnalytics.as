@@ -63,7 +63,7 @@ package {
 		3) Page URL: http://somedomain.com/section/category/page?accountNumber=UA-123456-0
 		*/
 		private static var ACCOUNT_NUMBER:String = "";
-		private static const VERSION:String = "1.0.0";
+		private static const VERSION:String = "1.0.2";
 		
 		private var _experienceModule:ExperienceModule;
 		private var _videoPlayerModule:VideoPlayerModule;
