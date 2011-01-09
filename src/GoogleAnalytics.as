@@ -38,9 +38,11 @@ package {
 	import com.brightcove.api.APIModules;
 	import com.brightcove.api.CustomModule;
 	import com.brightcove.api.dtos.VideoDTO;
+	import com.brightcove.api.events.AdEvent;
 	import com.brightcove.api.events.CuePointEvent;
 	import com.brightcove.api.events.ExperienceEvent;
 	import com.brightcove.api.events.MediaEvent;
+	import com.brightcove.api.modules.AdvertisingModule;
 	import com.brightcove.api.modules.CuePointsModule;
 	import com.brightcove.api.modules.ExperienceModule;
 	import com.brightcove.api.modules.VideoPlayerModule;
@@ -66,6 +68,7 @@ package {
 		private var _experienceModule:ExperienceModule;
 		private var _videoPlayerModule:VideoPlayerModule;
 		private var _cuePointsModule:CuePointsModule;
+		private var _advertisingModule:AdvertisingModule;
 		private var _currentVideo:VideoDTO;
 		private var _customVideoID:String;
 		
@@ -82,20 +85,12 @@ package {
 			_experienceModule = player.getModule(APIModules.EXPERIENCE) as ExperienceModule;
 			_videoPlayerModule = player.getModule(APIModules.VIDEO_PLAYER) as VideoPlayerModule;
 			_cuePointsModule = player.getModule(APIModules.CUE_POINTS) as CuePointsModule;
+			_advertisingModule = player.getModule(APIModules.ADVERTISING) as AdvertisingModule;
 			
 			debug("Version " + GoogleAnalytics.VERSION);
 			_debugEnabled = (getParamValue('debug') == "true") ? true : false;
 			
-			_experienceModule.addEventListener(ExperienceEvent.ENTER_FULLSCREEN, onEnterFullScreen);
-			_experienceModule.addEventListener(ExperienceEvent.EXIT_FULLSCREEN, onExitFullScreen);
-			
-			_videoPlayerModule.addEventListener(MediaEvent.CHANGE, onMediaChange);
-			_videoPlayerModule.addEventListener(MediaEvent.PLAY, onMediaPlay);
-			_videoPlayerModule.addEventListener(MediaEvent.PROGRESS, onMediaProgress);
-			_videoPlayerModule.addEventListener(MediaEvent.VOLUME_CHANGE, onVolumeChange);
-			_videoPlayerModule.addEventListener(MediaEvent.MUTE_CHANGE, onMuteChange);
-			
-			_cuePointsModule.addEventListener(CuePointEvent.CUE, onCuePoint);
+			setupEventListeners();
 			
 			_currentVideo = _videoPlayerModule.getCurrentVideo();
 			_customVideoID = getCustomVideoID(_currentVideo);
@@ -109,6 +104,27 @@ package {
 			
 			_tracker.trackEvent(Category.VIDEO, Action.PLAYER_LOAD, _experienceModule.getExperienceURL());
 			_tracker.trackEvent(Category.VIDEO, Action.VIDEO_LOAD, _customVideoID);
+		}
+		
+		private function setupEventListeners():void
+		{
+			_experienceModule.addEventListener(ExperienceEvent.ENTER_FULLSCREEN, onEnterFullScreen);
+			_experienceModule.addEventListener(ExperienceEvent.EXIT_FULLSCREEN, onExitFullScreen);
+			
+			_videoPlayerModule.addEventListener(MediaEvent.CHANGE, onMediaChange);
+			_videoPlayerModule.addEventListener(MediaEvent.PLAY, onMediaPlay);
+			_videoPlayerModule.addEventListener(MediaEvent.PROGRESS, onMediaProgress);
+			_videoPlayerModule.addEventListener(MediaEvent.VOLUME_CHANGE, onVolumeChange);
+			_videoPlayerModule.addEventListener(MediaEvent.MUTE_CHANGE, onMuteChange);
+			
+			_cuePointsModule.addEventListener(CuePointEvent.CUE, onCuePoint);
+			
+			_advertisingModule.addEventListener(AdEvent.AD_START, onAdStart);
+			_advertisingModule.addEventListener(AdEvent.AD_PAUSE, onAdPause);
+			_advertisingModule.addEventListener(AdEvent.AD_POSTROLLS_COMPLETE, onAdPostrollsComplete);
+			_advertisingModule.addEventListener(AdEvent.AD_RESUME, onAdResume);
+			_advertisingModule.addEventListener(AdEvent.AD_COMPLETE, onAdComplete);
+			_advertisingModule.addEventListener(AdEvent.EXTERNAL_AD, onExternalAd);
 		}
 		
 		private function onEnterFullScreen(pEvent:ExperienceEvent):void
@@ -260,6 +276,36 @@ package {
             };
             
             _cuePointsModule.addCuePoints(_currentVideo.id, [percent25, percent50, percent75]);
+        }
+        
+        private function onAdStart(pEvent:AdEvent):void
+        {
+        	_tracker.trackEvent(Category.VIDEO, Action.AD_START, _customVideoID);
+        }
+        
+        private function onAdPause(pEvent:AdEvent):void
+        {
+        	_tracker.trackEvent(Category.VIDEO, Action.AD_PAUSE, _customVideoID);
+        }
+       
+        private function onAdPostrollsComplete(pEvent:AdEvent):void
+        {
+        	_tracker.trackEvent(Category.VIDEO, Action.AD_POSTROLLS_COMPLETE, _customVideoID);
+        }
+        
+        private function onAdResume(pEvent:AdEvent):void
+        {
+        	_tracker.trackEvent(Category.VIDEO, Action.AD_RESUME, _customVideoID);
+        }
+        
+        private function onAdComplete(pEvent:AdEvent):void
+        {
+        	_tracker.trackEvent(Category.VIDEO, Action.AD_COMPLETE, _customVideoID);
+        }
+        
+        private function onExternalAd(pEvent:AdEvent):void
+        {
+        	_tracker.trackEvent(Category.VIDEO, Action.EXTERNAL_AD, _customVideoID);
         }
 
 		

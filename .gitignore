@@ -1,1 +1,6 @@
+#Ignoring the build folder
+bin-debug/
+bin-release/
+html-template/
+
 /Icon.png

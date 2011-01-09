@@ -13,5 +13,11 @@ package com.brightcoveos
 		public static const MILESTONE_25:String = "25% Milestone Passed";
 		public static const MILESTONE_50:String = "50% Milestone Passed";
 		public static const MILESTONE_75:String = "75% Milestone Passed";
+		public static const AD_START:String = "Ad Start";
+		public static const AD_PAUSE:String = "Ad Paused";
+		public static const AD_POSTROLLS_COMPLETE:String = "Ad Postrolls Complete";
+		public static const AD_RESUME:String = "Ad Resume";
+		public static const AD_COMPLETE:String = "Ad Complete";
+		public static const EXTERNAL_AD:String = "External Ad Found";
 	}
 }
