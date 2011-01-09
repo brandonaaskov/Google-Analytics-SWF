@@ -10,5 +10,8 @@ package com.brightcoveos
 		public static const EXIT_FULLSCREEN:String = "Fullscreen Exited";
 		public static const VIDEO_MUTED:String = "Video Muted";
 		public static const VIDEO_UNMUTED:String = "Video Unmuted";
+		public static const MILESTONE_25:String = "25% Milestone Passed";
+		public static const MILESTONE_50:String = "50% Milestone Passed";
+		public static const MILESTONE_75:String = "75% Milestone Passed";
 	}
 }

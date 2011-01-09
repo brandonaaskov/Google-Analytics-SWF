@@ -38,6 +38,7 @@ package {
 	import com.brightcove.api.APIModules;
 	import com.brightcove.api.CustomModule;
 	import com.brightcove.api.dtos.VideoDTO;
+	import com.brightcove.api.events.CuePointEvent;
 	import com.brightcove.api.events.ExperienceEvent;
 	import com.brightcove.api.events.MediaEvent;
 	import com.brightcove.api.modules.CuePointsModule;
@@ -82,8 +83,6 @@ package {
 			_videoPlayerModule = player.getModule(APIModules.VIDEO_PLAYER) as VideoPlayerModule;
 			_cuePointsModule = player.getModule(APIModules.CUE_POINTS) as CuePointsModule;
 			
-			setAccountNumber();
-			setPlayerType();
 			debug("Version " + GoogleAnalytics.VERSION);
 			_debugEnabled = (getParamValue('debug') == "true") ? true : false;
 			
@@ -96,8 +95,14 @@ package {
 			_videoPlayerModule.addEventListener(MediaEvent.VOLUME_CHANGE, onVolumeChange);
 			_videoPlayerModule.addEventListener(MediaEvent.MUTE_CHANGE, onMuteChange);
 			
+			_cuePointsModule.addEventListener(CuePointEvent.CUE, onCuePoint);
+			
 			_currentVideo = _videoPlayerModule.getCurrentVideo();
 			_customVideoID = getCustomVideoID(_currentVideo);
+			
+			setAccountNumber();
+			setPlayerType();
+			createCuePoints(_currentVideo);
 			
 			debug("GA Debug Enabled = " + _debugEnabled);
 			_tracker = new GATracker(_experienceModule.getStage(), GoogleAnalytics.ACCOUNT_NUMBER, "AS3", _debugEnabled);
@@ -208,6 +213,55 @@ package {
 				_tracker.trackEvent(Category.VIDEO, Action.VIDEO_UNMUTED, _customVideoID);
 			}
 		}
+		
+		private function onCuePoint(pEvent:CuePointEvent):void
+		{
+			if(pEvent.cuePoint.type == 2 && pEvent.cuePoint.name == "milestone")
+            {
+                _cuePointsModule.removeCodeCuePointsAtTime(_currentVideo.id, pEvent.cuePoint.time);
+                
+                switch(pEvent.cuePoint.metadata)
+                {
+                	case "25%":
+                		_tracker.trackEvent(Category.VIDEO, Action.MILESTONE_25, _customVideoID);
+                		break;
+                	case "50%":
+                		_tracker.trackEvent(Category.VIDEO, Action.MILESTONE_50, _customVideoID);
+                		break;
+                	case "75%":
+                		_tracker.trackEvent(Category.VIDEO, Action.MILESTONE_50, _customVideoID);
+                		break;
+                }
+            }
+		}
+		
+		/**
+         * @private
+         */
+        protected function createCuePoints(pVideo:VideoDTO):void
+        {
+            var percent25:Object = {
+                type: 2, //chapter cue point
+                name: "milestone",
+                metadata: "25%",
+                time: (pVideo.length/1000) * .25
+            };
+            var percent50:Object = {
+                type: 2, //chapter cue point
+                name: "milestone",
+                metadata: "50%",
+                time: (pVideo.length/1000) * .5
+            };
+            var percent75:Object = {
+                type: 2, //chapter cue point
+                name: "milestone",
+                metadata: "75%",
+                time: (pVideo.length/1000) * .75
+            };
+            
+            _cuePointsModule.addCuePoints(_currentVideo.id, [percent25, percent50, percent75]);
+        }
+
 		
 		/**
 		 * Keeps track of the aggregate time the user has been watching the video. If a user watches 10 seconds, 
