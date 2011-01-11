@@ -1,5 +1,5 @@
 /**
- * Brightcove Google Analytics SWF 1.0.0 (5 JANUARY 2011)
+ * Brightcove Google Analytics SWF 1.1.0 (5 JANUARY 2011)
  *
  * REFERENCES:
  *	 Website: http://opensource.brightcove.com
@@ -64,7 +64,7 @@ package {
 		3) Page URL: http://somedomain.com/section/category/page?accountNumber=UA-123456-0
 		*/
 		private static var ACCOUNT_NUMBER:String = "";
-		private static const VERSION:String = "1.0.3";
+		private static const VERSION:String = "1.1.0";
 		
 		private var _experienceModule:ExperienceModule;
 		private var _videoPlayerModule:VideoPlayerModule;

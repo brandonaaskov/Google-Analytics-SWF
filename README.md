@@ -10,7 +10,7 @@ Setup
 
 If you don't want to modify the code, follow these steps:
 
-1.	<strike>Grab the `GoogleAnalytics.swf` file from the `bin-release` directory</strike> (new build directory coming soon)
+1.	Grab the `GoogleAnalytics.swf` file from the root directory
 
 2.	Upload the file to a server that's URL addressable; make note of that URL
 
