@@ -8,6 +8,8 @@ package com.brightcoveos
 		public static const VIDEO_LOAD:String = "Video Load";
 		public static const REFERRER_URL:String = "Referrer URL: ";
 		public static const MEDIA_BEGIN:String = "Media Begin";
+		public static const MEDIA_PAUSE:String = "Media Pause";
+		public static const MEDIA_RESUME:String = "Media Resume";
 		public static const MEDIA_COMPLETE:String = "Media Complete";
 		public static const MEDIA_ABANDONED:String = "Media Abandoned";
 		public static const ENTER_FULLSCREEN:String = "Fullscreen Entered";

@@ -1,5 +1,5 @@
 /**
- * Brightcove Google Analytics SWF 1.1.0 (5 JANUARY 2011)
+ * Brightcove Google Analytics SWF 1.1.1 (5 JANUARY 2011)
  *
  * REFERENCES:
  *	 Website: http://opensource.brightcove.com
@@ -64,7 +64,7 @@ package {
 		3) Page URL: http://somedomain.com/section/category/page?accountNumber=UA-123456-0
 		*/
 		private static var ACCOUNT_NUMBER:String = "";
-		private static const VERSION:String = "1.1.0";
+		private static const VERSION:String = "1.1.1";
 		
 		private var _experienceModule:ExperienceModule;
 		private var _videoPlayerModule:VideoPlayerModule;
@@ -75,14 +75,19 @@ package {
 		
 		private var _debugEnabled:Boolean = false;
 		private var _tracker:GATracker;
-		private var _mediaComplete:Boolean = true;
 		private var _currentPosition:Number;
 		private var _previousTimestamp:Number;
 		private var _timeWatched:Number; //stored in milliseconds
+		private var _storedTimeWatched:SharedObject = SharedObject.getLocal("previousVideo");
+		
+		//flags for tracking
+		private var _mediaBegin:Boolean = false;
+		private var _mediaComplete:Boolean = true;
+		private var _mediaPaused:Boolean = false;
+		private var _mediaSeeking:Boolean = false;
 		private var _videoMuted:Boolean = false;
 		private var _trackSeekForward:Boolean = false;
 		private var _trackSeekBackward:Boolean = false;
-		private var _storedTimeWatched:SharedObject = SharedObject.getLocal("previousVideo");
 		
 		override protected function initialize():void
 		{
@@ -123,11 +128,14 @@ package {
 			_experienceModule.addEventListener(ExperienceEvent.EXIT_FULLSCREEN, onExitFullScreen);
 			
 			_videoPlayerModule.addEventListener(MediaEvent.CHANGE, onMediaChange);
+			_videoPlayerModule.addEventListener(MediaEvent.BEGIN, onMediaBegin);
 			_videoPlayerModule.addEventListener(MediaEvent.PLAY, onMediaPlay);
+			_videoPlayerModule.addEventListener(MediaEvent.STOP, onMediaStop);
 			_videoPlayerModule.addEventListener(MediaEvent.PROGRESS, onMediaProgress);
 			_videoPlayerModule.addEventListener(MediaEvent.VOLUME_CHANGE, onVolumeChange);
 			_videoPlayerModule.addEventListener(MediaEvent.MUTE_CHANGE, onMuteChange);
 			_videoPlayerModule.addEventListener(MediaEvent.SEEK, onSeek);
+			_videoPlayerModule.addEventListener(MediaEvent.COMPLETE, onMediaComplete);
 			
 			_cuePointsModule.addEventListener(CuePointEvent.CUE, onCuePoint);
 			
@@ -165,9 +173,9 @@ package {
 			_timeWatched = 0;
 		}
 		
-		private function onMediaPlay(pEvent:MediaEvent):void
+		private function onMediaBegin(pEvent:MediaEvent):void
 		{
-			if(_mediaComplete)
+			if(!_mediaBegin)
 			{
 				_tracker.trackEvent(Category.VIDEO, Action.MEDIA_BEGIN, _customVideoID);
 				
@@ -175,6 +183,32 @@ package {
 				_timeWatched = 0;
 				
 				_mediaComplete = false;
+				_mediaBegin = true;
+			}
+		}
+		
+		private function onMediaPlay(pEvent:MediaEvent):void
+		{
+			if(!_mediaBegin)
+			{
+				//PD videos don't fire mediaPlay when the video starts the first time around, so we'll track it manually 
+				onMediaBegin(pEvent);	
+			}
+			
+			if(_mediaPaused)
+			{
+				debug('Media resume');
+				_mediaPaused = false;
+				_tracker.trackEvent(Category.VIDEO, Action.MEDIA_RESUME, _customVideoID);
+			}
+		}
+		
+		private function onMediaStop(pEvent:MediaEvent):void
+		{
+			if(!_mediaComplete && !_mediaPaused)
+			{
+				_mediaPaused = true;
+				_tracker.trackEvent(Category.VIDEO, Action.MEDIA_PAUSE, _customVideoID);
 			}
 		}
 		
@@ -209,16 +243,23 @@ package {
 			
 			
 			//track seek events
-			if(_trackSeekForward)
+			if(!_mediaSeeking)
 			{
-				_tracker.trackEvent(Category.VIDEO, Action.SEEK_FORWARD, _customVideoID);
-				_trackSeekForward = false;
+				if(_trackSeekForward)
+				{
+					_tracker.trackEvent(Category.VIDEO, Action.SEEK_FORWARD, _customVideoID);
+					_trackSeekForward = false;
+				}
+				
+				if(_trackSeekBackward)
+				{
+					_tracker.trackEvent(Category.VIDEO, Action.SEEK_BACKWARD, _customVideoID);
+					_trackSeekBackward = false;
+				}
 			}
-			
-			if(_trackSeekBackward)
+			else
 			{
-				_tracker.trackEvent(Category.VIDEO, Action.SEEK_BACKWARD, _customVideoID);
-				_trackSeekBackward = false;
+				_mediaSeeking = false;
 			}
 		}
 		
@@ -228,9 +269,13 @@ package {
 		 */ 
 		private function onMediaComplete(pEvent:MediaEvent):void
 		{
-			_mediaComplete = true;
+			if(!_mediaComplete)
+			{
+				_mediaComplete = true;
+				_mediaBegin = false;
 			
-			_tracker.trackEvent(Category.VIDEO, Action.MEDIA_COMPLETE, _customVideoID, Math.round(_timeWatched));
+				_tracker.trackEvent(Category.VIDEO, Action.MEDIA_COMPLETE, _customVideoID, Math.round(_timeWatched));
+			}
 		}
 		
 		private function onVolumeChange(pEvent:MediaEvent):void
@@ -276,6 +321,8 @@ package {
 			{
 				_trackSeekBackward = true;	
 			}
+			
+			_mediaSeeking = true;
 		}
 		
 		private function onCuePoint(pEvent:CuePointEvent):void
@@ -382,6 +429,8 @@ package {
 		private function setAccountNumber():void
 		{
 			GoogleAnalytics.ACCOUNT_NUMBER = getParamValue('accountNumber');
+			
+			GoogleAnalytics.ACCOUNT_NUMBER = 'UA-1111111-1';
 			
 			if(!GoogleAnalytics.ACCOUNT_NUMBER)
 			{
