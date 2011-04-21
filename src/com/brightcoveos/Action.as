@@ -27,5 +27,7 @@ package com.brightcoveos
 		public static const EXTERNAL_AD:String = "External Ad Found";
 		public static const SEEK_FORWARD:String = "Seeked Forward";
 		public static const SEEK_BACKWARD:String = "Seeked Backward";
+		public static const RENDITION_CHANGE_INCREASE:String = "Rendition Change Increase";
+		public static const RENDITION_CHANGE_DECREASE:String = "Rendition Change Decrease";
 	}
 }
