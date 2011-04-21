@@ -10,7 +10,7 @@ Setup
 
 If you don't want to modify the code, follow these steps:
 
-1.	Grab the `GoogleAnalytics.swf` file from the root directory
+1.	Grab the latest `GoogleAnalytics.swf` file from the [Downloads section](https://github.com/BrightcoveOS/Google-Analytics-SWF/downloads)
 
 2.	Upload the file to a server that's URL addressable; make note of that URL
 
