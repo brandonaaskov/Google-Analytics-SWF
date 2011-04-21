@@ -1,5 +1,5 @@
 /**
- * Brightcove Google Analytics SWF 1.1.1 (5 JANUARY 2011)
+ * Brightcove Google Analytics SWF 1.1.2 (21 APRIL 2011)
  *
  * REFERENCES:
  *	 Website: http://opensource.brightcove.com
@@ -37,6 +37,7 @@
 package {
 	import com.brightcove.api.APIModules;
 	import com.brightcove.api.CustomModule;
+	import com.brightcove.api.dtos.RenditionAssetDTO;
 	import com.brightcove.api.dtos.VideoDTO;
 	import com.brightcove.api.events.AdEvent;
 	import com.brightcove.api.events.CuePointEvent;
@@ -64,7 +65,7 @@ package {
 		3) Page URL: http://somedomain.com/section/category/page?accountNumber=UA-123456-0
 		*/
 		private static var ACCOUNT_NUMBER:String = "";
-		private static const VERSION:String = "1.1.1";
+		private static const VERSION:String = "1.1.2";
 		
 		private var _experienceModule:ExperienceModule;
 		private var _videoPlayerModule:VideoPlayerModule;
@@ -72,6 +73,7 @@ package {
 		private var _advertisingModule:AdvertisingModule;
 		private var _currentVideo:VideoDTO;
 		private var _customVideoID:String;
+		private var _currentRendition:RenditionAssetDTO;
 		
 		private var _debugEnabled:Boolean = false;
 		private var _tracker:GATracker;
@@ -136,6 +138,7 @@ package {
 			_videoPlayerModule.addEventListener(MediaEvent.MUTE_CHANGE, onMuteChange);
 			_videoPlayerModule.addEventListener(MediaEvent.SEEK, onSeek);
 			_videoPlayerModule.addEventListener(MediaEvent.COMPLETE, onMediaComplete);
+			_videoPlayerModule.addEventListener(MediaEvent.RENDITION_CHANGE_COMPLETE, onRenditionChangeComplete);
 			
 			_cuePointsModule.addEventListener(CuePointEvent.CUE, onCuePoint);
 			
@@ -276,6 +279,28 @@ package {
 			
 				_tracker.trackEvent(Category.VIDEO, Action.MEDIA_COMPLETE, _customVideoID, Math.round(_timeWatched));
 			}
+		}
+		
+		private function onRenditionChangeComplete(pEvent:MediaEvent):void
+		{
+			var rendition:RenditionAssetDTO = pEvent.rendition as RenditionAssetDTO;
+			var encodingRate:uint = Math.round(rendition.encodingRate/1000);
+			
+			if(_currentRendition)
+			{				
+				if(rendition.encodingRate > _currentRendition.encodingRate)
+				{
+					//rendition change increase
+					_tracker.trackEvent(Category.VIDEO, Action.RENDITION_CHANGE_INCREASE, _customVideoID, encodingRate);
+				}
+				else if(rendition.encodingRate < _currentRendition.encodingRate)
+				{
+					//rendition change decrease
+					_tracker.trackEvent(Category.VIDEO, Action.RENDITION_CHANGE_DECREASE, _customVideoID, encodingRate);
+				}
+			}
+
+			_currentRendition = rendition;
 		}
 		
 		private function onVolumeChange(pEvent:MediaEvent):void
