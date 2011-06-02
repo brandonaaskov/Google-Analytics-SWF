@@ -455,8 +455,6 @@ package {
 		{
 			GoogleAnalytics.ACCOUNT_NUMBER = getParamValue('accountNumber');
 			
-			GoogleAnalytics.ACCOUNT_NUMBER = 'UA-1111111-1';
-			
 			if(!GoogleAnalytics.ACCOUNT_NUMBER)
 			{
 				throw new Error('The Google Analytics account number has not been defined. This is required for the analytics SWF to function properly.');
