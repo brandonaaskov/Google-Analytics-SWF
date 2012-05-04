@@ -91,6 +91,13 @@ package {
 		private var _trackSeekForward:Boolean = false;
 		private var _trackSeekBackward:Boolean = false;
 		
+    public function GoogleAnalytics():void
+    {
+      trace("@project GoogleAnalytics");
+      trace("@author Brandon Aaskov");
+      trace("@lastModified 05.04.12 3:56 PM EST");
+    }
+    
 		override protected function initialize():void
 		{
 			_experienceModule = player.getModule(APIModules.EXPERIENCE) as ExperienceModule;
