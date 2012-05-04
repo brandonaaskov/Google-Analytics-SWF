@@ -1,5 +1,5 @@
 /**
- * Brightcove Google Analytics SWF 1.1.3 (2 JUNE 2011)
+ * Brightcove Google Analytics SWF 1.1.4 (4 MAY 2012)
  *
  * REFERENCES:
  *	 Website: http://opensource.brightcove.com
