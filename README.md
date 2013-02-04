@@ -10,7 +10,7 @@ Setup
 
 If you don't want to modify the code, follow these steps:
 
-1.	Grab the latest `GoogleAnalytics.swf` file from the [Downloads section](https://github.com/BrightcoveOS/Google-Analytics-SWF/downloads)
+1.	Grab the latest `GoogleAnalytics.swf` file from the `bin-release` folder.
 
 2.	Upload the file to a server that's URL addressable; make note of that URL
 
@@ -80,4 +80,4 @@ Current Supported Events
 ========================
 
 To view a list of supported events, and to see what can potentially be 
-tracked, you can view [Action.as in src > com > brightcoveos > Action.as](https://github.com/BrightcoveOS/Google-Analytics-SWF/blob/master/src/com/brightcoveos/Action.as).
+tracked, you can view [Action.as in src > com > brightcoveos > Action.as](https://github.com/BrightcoveOS/Google-Analytics-SWF/blob/master/src/com/brightcoveos/Action.as).gle-Analytics-SWF/blob/master/src/com/brightcoveos/Action.as).
