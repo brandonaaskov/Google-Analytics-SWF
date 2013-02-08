@@ -2,5 +2,4 @@
 
 # Ignore build folders
 bin-debug/
-bin-release/
 html-template/
